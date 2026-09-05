@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Фотик — Alpha</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(#ffe56b, #fff7cf);
+    color: #171717;
+}
+
+/* ===== ШАПКА ===== */
+
+header {
+    height: 80px;
+    background: #ffd83d;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 25px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    box-shadow: 0 2px 10px #0002;
+}
+
+.logo-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.logo {
+    width: 150px;
+    height: 52px;
+    object-fit: contain;
+
+    /*
+    Убираем визуально чёрный фон
+    предоставленного логотипа.
+    */
+    mix-blend-mode: multiply;
+}
+
+.alpha {
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 4px;
+    margin-top: -4px;
+}
+
+/* ===== КНОПКИ ===== */
+
+button {
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.new-post {
+    background: #171717;
+    color: white;
+    border: none;
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.new-post:hover {
+    transform: scale(1.03);
+}
+
+/* ===== ОСНОВА ===== */
+
+main {
+    width: min(680px, calc(100% - 24px));
+    margin: 25px auto 60px;
+}
+
+.welcome {
+    background: white;
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 18px;
+    box-shadow: 0 8px 25px #8d781f33;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.welcome h1 {
+    margin: 0;
+    font-size: 28px;
+}
+
+.welcome h1 span {
+    font-size: 12px;
+    background: #ffd83d;
+    padding: 5px 8px;
+    border-radius: 7px;
+    vertical-align: middle;
+}
+
+.welcome p {
+    color: #666;
+    margin: 6px 0 0;
+}
+
+.post-count {
+    font-size: 25px;
+    font-weight: bold;
+}
+
+/* ===== ЛЕНТА ===== */
+
+#feed {
+    display: grid;
+    gap: 20px;
+}
+
+.post {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 8px 25px #8d781f33;
+}
+
+/* Автор */
+
+.post-header {
+    height: 62px;
+    padding: 10px 14px;
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+
+    background: #fff0a5;
+
+    display: grid;
+    place-items: center;
+
+    font-size: 21px;
+}
+
+.author {
+    font-weight: bold;
+}
+
+.date {
+    display: block;
+    color: #888;
+    font-size: 11px;
+    margin-top: 3px;
+}
+
+.delete {
+    margin-left: auto;
+    border: none;
+    background: none;
+    color: #888;
+    font-size: 18px;
+}
+
+/* Фото */
+
+.post-image {
+    width: 100%;
+    max-height: 700px;
+    display: block;
+    object-fit: cover;
+    background: #eee;
+}
+
+/* Контент */
+
+.post-content {
+    padding: 13px 14px 16px;
+}
+
+.actions {
+    display: flex;
+    gap: 8px;
+}
+
+.actions button {
+    border: none;
+    background: #f4f2e8;
+    padding: 9px 12px;
+    border-radius: 10px;
+    font-weight: bold;
+}
+
+.actions button:hover {
+    background: #ffd83d;
+}
+
+.like.liked {
+    background: #ffdfe4;
+    color: #c21c35;
+}
+
+.caption {
+    margin: 10px 0;
+    white-space: pre-wrap;
+}
+
+/* Комментарии */
+
+.comments {
+    display: grid;
+    gap: 6px;
+}
+
+.comment {
+    background: #f4f4ef;
+    padding: 8px 10px;
+    border-radius: 9px;
+    font-size: 14px;
+}
+
+.comment b {
+    margin-right: 5px;
+}
+
+.comment-form {
+    display: flex;
+    gap: 7px;
+    margin-top: 10px;
+}
+
+.comment-form input {
+    flex: 1;
+    min-width: 0;
+    border: 1px solid #ddd5b5;
+    border-radius: 10px;
+    padding: 10px;
+    outline: none;
+}
+
+.comment-form button {
+    border: none;
+    background: #ffd83d;
+    padding: 0 13px;
+    border-radius: 10px;
+    font-weight: bold;
+}
+
+/* ===== ПУСТАЯ ЛЕНТА ===== */
+
+.empty {
+    text-align: center;
+    padding: 60px 10px;
+}
+
+.empty-icon {
+    font-size: 55px;
+}
+
+.empty h2 {
+    margin: 8px 0;
+}
+
+.empty p {
+    color: #666;
+}
+
+.hidden {
+    display: none;
+}
+
+/* ===== ОКНО СОЗДАНИЯ ===== */
+
+dialog {
+    width: min(500px, calc(100% - 24px));
+    border: none;
+    border-radius: 20px;
+    padding: 0;
+
+    box-shadow: 0 30px 80px #0006;
+}
+
+dialog::backdrop {
+    background: #0007;
+}
+
+.modal {
+    padding: 20px;
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.modal-header h2 {
+    margin: 0;
+}
+
+.close {
+    width: 35px;
+    height: 35px;
+    border: none;
+    border-radius: 9px;
+    background: #eee;
+    font-size: 23px;
+}
+
+label {
+    display: block;
+    font-weight: bold;
+    margin-top: 15px;
+}
+
+input[type="file"],
+textarea {
+    width: 100%;
+    margin-top: 7px;
+    border: 1px solid #ddd5b5;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+textarea {
+    min-height: 90px;
+    resize: vertical;
+}
+
+.preview {
+    width: 100%;
+    max-height: 300px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin-top: 10px;
+}
+
+.publish {
+    width: 100%;
+    margin-top: 15px;
+
+    background: #171717;
+    color: white;
+
+    border: none;
+    border-radius: 12px;
+
+    padding: 13px;
+
+    font-weight: bold;
+}
+
+/* ===== ТЕЛЕФОН ===== */
+
+@media (max-width: 600px) {
+
+    header {
+        padding: 7px 12px;
+    }
+
+    .logo {
+        width: 125px;
+    }
+
+    .new-post {
+        padding: 10px;
+        font-size: 13px;
+    }
+
+    .welcome {
+        padding: 16px;
+    }
+
+    .welcome h1 {
+        font-size: 24px;
+    }
+
+    .welcome p {
+        font-size: 12px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+
+    <div class="logo-box">
+
+        <!-- Название твоего логотипа -->
+        <img src="logo.png" class="logo" alt="Фотик">
+
+        <!-- Alpha под логотипом -->
+        <div class="alpha">ALPHA</div>
+
+    </div>
+
+    <button class="new-post" onclick="openPostWindow()">
+        ＋ Новый пост
+    </button>
+
+</header>
+
+
+<main>
+
+    <section class="welcome">
+
+        <div>
+
+            <h1>
+                Фотик
+                <span>ALPHA</span>
+            </h1>
+
+            <p>
+                Публикуй фотки, ставь лайки
+                и оставляй комментарии.
+            </p>
+
+        </div>
+
+        <div class="post-count" id="postCount">
+            0
+        </div>
+
+    </section>
+
+
+    <section id="feed"></section>
+
+
+    <section class="empty" id="empty">
+
+        <div class="empty-icon">
+            📷
+        </div>
+
+        <h2>
+            Пока нет постов
+        </h2>
+
+        <p>
+            Создай первый фотопост!
+        </p>
+
+        <button
+            class="new-post"
+            onclick="openPostWindow()"
+        >
+            Создать пост
+        </button>
+
+    </section>
+
+</main>
+
+
+<!-- ===== ОКНО СОЗДАНИЯ ПОСТА ===== -->
+
+<dialog id="postDialog">
+
+    <form
+        class="modal"
+        id="postForm"
+    >
+
+        <div class="modal-header">
+
+            <h2>
+                Новый пост
+            </h2>
+
+            <button
+                type="button"
+                class="close"
+                onclick="closePostWindow()"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <label>
+
+            Фотография
+
+            <input
+                type="file"
+                id="photoInput"
+                accept="image/*"
+                required
+            >
+
+        </label>
+
+
+        <img
+            id="preview"
+            class="preview hidden"
+            alt="Предпросмотр"
+        >
+
+
+        <label>
+
+            Подпись
+
+            <textarea
+                id="captionInput"
+                maxlength="240"
+                placeholder="Напиши что-нибудь..."
+            ></textarea>
+
+        </label>
+
+
+        <button
+            type="submit"
+            class="publish"
+        >
+            Опубликовать
+        </button>
+
+    </form>
+
+</dialog>
+
+
+<script>
+
+/* ==================================================
+   ФОТИК — ALPHA
+   Локальная версия для GitHub Pages
+   ================================================== */
+
+const STORAGE_KEY = "fotik_alpha_posts";
+
+let posts =
+    JSON.parse(
+        localStorage.getItem(STORAGE_KEY) || "[]"
+    );
+
+
+/* ===== Сохранение ===== */
+
+function savePosts() {
+
+    localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(posts)
+    );
+
+}
+
+
+/* ===== Время ===== */
+
+function timeAgo(timestamp) {
+
+    const minutes =
+        Math.floor(
+            (Date.now() - timestamp) / 60000
+        );
+
+    if (minutes < 1)
+        return "только что";
+
+    if (minutes < 60)
+        return minutes + " мин. назад";
+
+    const hours =
+        Math.floor(minutes / 60);
+
+    if (hours < 24)
+        return hours + " ч. назад";
+
+    return new Date(timestamp)
+        .toLocaleDateString("ru-RU");
+
+}
+
+
+/* ===== Безопасный текст ===== */
+
+function escapeHTML(text) {
+
+    return String(text)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
+
+/* ===== Отрисовка ===== */
+
+function renderPosts() {
+
+    const feed =
+        document.getElementById("feed");
+
+    const empty =
+        document.getElementById("empty");
+
+    const count =
+        document.getElementById("postCount");
+
+
+    feed.innerHTML = "";
+
+    count.textContent = posts.length;
+
+    empty.classList.toggle(
+        "hidden",
+        posts.length > 0
+    );
+
+
+    posts.forEach((post, index) => {
+
+        const article =
+            document.createElement("article");
+
+        article.className = "post";
+
+
+        article.innerHTML = `
+
+            <div class="post-header">
+
+                <div class="avatar">
+                    📷
+                </div>
+
+                <div>
+
+                    <div class="author">
+                        Гость
+                    </div>
+
+                    <small class="date">
+                        ${timeAgo(post.created)}
+                    </small>
+
+                </div>
+
+                <button
+                    class="delete"
+                    title="Удалить пост"
+                >
+                    •••
+                </button>
+
+            </div>
+
+
+            <img
+                class="post-image"
+                src="${post.image}"
+                alt="Фотография"
+            >
+
+
+            <div class="post-content">
+
+                <div class="actions">
+
+                    <button class="like">
+
+                        ${post.liked ? "♥" : "♡"}
+
+                        <span>
+                            ${post.likes}
+                        </span>
+
+                    </button>
+
+
+                    <button class="comment-button">
+
+                        💬
+
+                        <span>
+                            ${post.comments.length}
+                        </span>
+
+                    </button>
+
+                </div>
+
+
+                <p class="caption">
+                    ${escapeHTML(post.caption || "")}
+                </p>
+
+
+                <div class="comments">
+
+                    ${post.comments.map(comment => `
+
+                        <div class="comment">
+
+                            <b>
+                                ${escapeHTML(comment.name)}
+                            </b>
+
+                            ${escapeHTML(comment.text)}
+
+                        </div>
+
+                    `).join("")}
+
+                </div>
+
+
+                <form class="comment-form">
+
+                    <input
+                        maxlength="180"
+                        placeholder="Написать комментарий..."
+                        required
+                    >
+
+                    <button>
+                        Отправить
+                    </button>
+
+                </form>
+
+            </div>
+        `;
+
+
+        /* ===== Лайк ===== */
+
+        const likeButton =
+            article.querySelector(".like");
+
+        likeButton.onclick = () => {
+
+            post.liked = !post.liked;
+
+            post.likes +=
+                post.liked ? 1 : -1;
+
+            savePosts();
+
+            renderPosts();
+
+        };
+
+
+        /* ===== Комментарии ===== */
+
+        const commentButton =
+            article.querySelector(".comment-button");
+
+        commentButton.onclick = () => {
+
+            article
+                .querySelector(".comment-form input")
+                .focus();
+
+        };
+
+
+        const commentForm =
+            article.querySelector(".comment-form");
+
+        commentForm.onsubmit = event => {
+
+            event.preventDefault();
+
+            const input =
+                commentForm.querySelector("input");
+
+            const text =
+                input.value.trim();
+
+            if (!text)
+                return;
+
+
+            post.comments.push({
+
+                name: "Гость",
+
+                text: text
+
+            });
+
+
+            input.value = "";
+
+            savePosts();
+
+            renderPosts();
+
+        };
+
+
+        /* ===== Удаление ===== */
+
+        article.querySelector(".delete").onclick = () => {
+
+            if (
+                confirm(
+                    "Удалить этот пост?"
+                )
+            ) {
+
+                posts.splice(index, 1);
+
+                savePosts();
+
+                renderPosts();
+
+            }
+
+        };
+
+
+        feed.appendChild(article);
+
+    });
+
+}
+
+
+/* ===== Открытие окна ===== */
+
+function openPostWindow() {
+
+    document
+        .getElementById("postForm")
+        .reset();
+
+    document
+        .getElementById("preview")
+        .classList.add("hidden");
+
+    document
+        .getElementById("postDialog")
+        .showModal();
+
+}
+
+
+/* ===== Закрытие ===== */
+
+function closePostWindow() {
+
+    document
+        .getElementById("postDialog")
+        .close();
+
+}
+
+
+/* ===== Предпросмотр фото ===== */
+
+document
+    .getElementById("photoInput")
+    .addEventListener(
+        "change",
+        function () {
+
+            const file =
+                this.files[0];
+
+            if (!file)
+                return;
+
+
+            const reader =
+                new FileReader();
+
+
+            reader.onload =
+                function (event) {
+
+                    const preview =
+                        document.getElementById("preview");
+
+                    preview.src =
+                        event.target.result;
+
+                    preview.classList.remove(
+                        "hidden"
+                    );
+
+                };
+
+
+            reader.readAsDataURL(file);
+
+        }
+    );
+
+
+/* ===== Создание поста ===== */
+
+document
+    .getElementById("postForm")
+    .addEventListener(
+        "submit",
+        function (event) {
+
+            event.preventDefault();
+
+
+            const file =
+                document.getElementById(
+                    "photoInput"
+                ).files[0];
+
+
+            if (!file)
+                return;
+
+
+            const caption =
+                document.getElementById(
+                    "captionInput"
+                ).value.trim();
+
+
+            const reader =
+                new FileReader();
+
+
+            reader.onload =
+                function (event) {
+
+                    const newPost = {
+
+                        image:
+                            event.target.result,
+
+                        caption:
+                            caption,
+
+                        likes:
+                            0,
+
+                        liked:
+                            false,
+
+                        comments:
+                            [],
+
+                        created:
+                            Date.now()
+
+                    };
+
+
+                    posts.unshift(
+                        newPost
+                    );
+
+
+                    savePosts();
+
+                    renderPosts();
+
+                    closePostWindow();
+
+                };
+
+
+            reader.readAsDataURL(file);
+
+        }
+    );
+
+
+/* ===== Запуск ===== */
+
+renderPosts();
+
+</script>
+
+</body>
+</html>
